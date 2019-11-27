@@ -1,0 +1,25 @@
+﻿<div class="my-component">
+    This Blazor component is defined in the <strong>CashUI</strong> package.
+   Create Date: @Data.CreateDateTime
+   Total price: @Data.TotalPrice 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in Data.Lines)
+            {
+                <ReceiptLine Data=@line></ReceiptLine>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code{
+
+    public CashModel.Receipt Data { get; set; }
+};

@@ -1,0 +1,92 @@
+@page "/cash"
+@using DeHaanCash.CashUI
+@using ProductCategories
+@inject IJSRuntime JsRuntime
+
+<div class="mat-blazor-demo-theme-app-row">
+    <div id='main-container' class='container d-inline-flex flex-row shadow-lg'>
+
+		<div id='left' class='container col-8 justify-content-start'>
+			<div id='top-bar' class='d-flex flex-row shadow-lg '>
+
+		        <i class="material-icons" id='menu-icon'>menu</i>
+            </div>
+     
+            <Receiptline Data="@Data"></Receiptline>
+            <div id="product-container" class=''>
+                <ProductCategories OnClick="@RenderComponent"></ProductCategories>
+                    @CustomRender
+
+
+                
+                
+ 
+            </div>
+        </div>
+
+
+        <div id='right' class='container col-4 bg-white'>
+            <div id='order-container'>@ProductContainer.CustomRender</div>
+                <div id='checkout-container'>
+                    <div id="price-container" class='text-muted'>
+                        <p id='discount' >Discount</p>
+                        <p id='subtotal' >Subtotal</p>
+                        <p id='total'>Total</p>
+                    </div>
+                    <div id="checkout-buttons-container">
+                        <button Raised='true' id="cancel-button" class="">Cancel</button>
+                        <button Raised='true' id="pin-button" class="">Pin</button>
+                        <button Raised='true' id="contant-button" class="">Contant</button>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+    </div>
+
+@code {
+    public int i = 1;
+    public int amountClicked;
+    public CashModel.Receipt Data { get; set; }
+
+    List<RenderFragment> list = new List<RenderFragment>();
+    RenderFragment CustomRender { get; set;}
+    RenderFragment CreateItem() => builder =>
+    {
+
+        builder.OpenComponent(0, typeof(ProductContainer));
+        builder.AddAttribute(1, "Id",i );
+        builder.CloseComponent();
+
+
+    };
+    void RenderComponent(MouseEventArgs e){
+
+
+        CustomRender = CreateItem();
+        getIndexClickedCategory();
+
+
+
+
+
+    }
+    public async Task getIndexClickedCategory(){
+        var response = await JsRuntime.InvokeAsync<int>(identifier:"getButtonIndex",i);
+        //await JsRuntime.InvokeVoidAsync("setElementTextById","indexClicked",response);
+        //Console.WriteLine(index);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = new CashModel.Receipt();
+        Data.CreateDateTime = DateTime.Now;
+        Data.Lines.Add(new CashModel.ReceiptLine { Description = "poep", Price = 1.23, Quantity = 2 });
+        Data.Lines.Add(new CashModel.ReceiptLine { Description = "poep", Price = 1.23, Quantity = 2 });
+        Data.Lines.Add(new CashModel.ReceiptLine { Description = "poep", Price = 1.23, Quantity = 2 });
+    }
+
+
+}
+
+
